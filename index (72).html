@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSight AI - Patent-Worthy Code Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Styles for CodeSight AI */
+        :root {
+            --primary-color: #6f42c1;
+            --secondary-color: #6610f2;
+            --accent-color: #20c997;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding-top: 80px;
+        }
+
+        .hero-badges .badge {
+            font-size: 0.9rem;
+            margin-right: 10px;
+            padding: 8px 15px;
+        }
+
+        .code-visualization {
+            perspective: 1000px;
+        }
+
+        .code-window {
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            transform: rotateY(-5deg) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .code-window:hover {
+            transform: rotateY(0deg) rotateX(0deg);
+        }
+
+        .window-header {
+            background: #2d2d2d;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca3f; }
+
+        .filename {
+            color: #fff;
+            margin-left: 10px;
+            font-family: monospace;
+        }
+
+        .code-content {
+            padding: 20px;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .code-content pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: #f8f9fa;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* Analyzer Section */
+        .analyzer-section {
+            background: white;
+        }
+
+        .analyzer-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .code-input {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Patent Steps */
+        .patent-step {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            height: 100%;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        /* Results Animation */
+        .result-card {
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Innovation Score Display */
+        .innovation-score {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+           
+            .code-window {
+                transform: none;
+                margin-top: 30px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Analysis Results */
+        .patent-badge {
+            font-size: 1.1rem;
+            padding: 10px 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-robot"></i> CodeSight AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#analyzer">Analyzer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#patent">Patent Guide</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold">AI-Powered Code Analysis</h1>
+                    <p class="lead">Discover patent-worthy innovations in your code with our advanced AI analysis platform</p>
+                    <div class="hero-badges">
+                        <span class="badge bg-primary">Patent Ready</span>
+                        <span class="badge bg-success">AI Powered</span>
+                        <span class="badge bg-info">Real-time Analysis</span>
+                    </div>
+                    <button class="btn btn-primary btn-lg mt-3" onclick="scrollToAnalyzer()">
+                        <i class="fas fa-play"></i> Start Analysis
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <div class="code-visualization">
+                        <div class="code-window">
+                            <div class="window-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="filename">innovation_analyzer.py</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code>def analyze_patent_potential(code):
+    # AI-powered innovation detection
+    innovations = neural_processor.extract(code)
+    patent_score = calculate_patentability(innovations)
+   
+    if patent_score > 0.8:
+        return "High Patent Potential"
+    return "Further Development Needed"
+
+class NeuralProcessor:
+    def extract(self, code):
+        # Advanced pattern recognition
+        patterns = self.detect_innovative_patterns(code)
+        return self.score_innovation(patterns)
+   
+    def detect_innovative_patterns(self, code):
+        # Machine learning algorithm
+        return self.ai_model.analyze(code)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4">Innovative Features</h2>
+                <p class="lead">Advanced capabilities for patent-worthy code analysis</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>Neural Code Processing</h4>
+                        <p>Advanced AI algorithms that understand code semantics and detect innovative patterns</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Innovation Scoring</h4>
+                        <p>Quantitative assessment of your code's patent potential with detailed metrics</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4>Patent Recommendations</h4>
+                        <p>Actionable insights and guidance for patent application preparation</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <h4>Pattern Recognition</h4>
+                        <p>Identify unique algorithmic patterns that qualify for patent protection</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>IP Protection</h4>
+                        <p>Guidance on protecting your intellectual property through proper documentation</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h4>Fast Analysis</h4>
+                        <p>Real-time processing with results delivered in seconds, not hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Analyzer Section -->
+    <section id="analyzer" class="analyzer-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="display-4">AI Code Analyzer</h2>
+                        <p class="lead">Paste your code below for patent potential analysis</p>
+                    </div>
+                   
+                    <div class="analyzer-card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0"><i class="fas fa-code"></i> Code Analysis Panel</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select Language</label>
+                                        <select class="form-select" id="languageSelect">
+                                            <option value="python">Python</option>
+                                            <option value="javascript">JavaScript</option>
+                                            <option value="java">Java</option>
+                                            <option value="cpp">C++</option>
+                                            <option value="csharp">C#</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Your Innovative Code</label>
+                                        <textarea class="form-control code-input" id="codeInput" rows="15"
+                                                  placeholder="Paste your innovative code here...&#10;&#10;Example:&#10;def adaptive_ml_pipeline(data, context):&#10;    # Self-optimizing machine learning algorithm&#10;    model = auto_select_model(data)&#10;    hyperparams = real_time_optimization(context)&#10;    return ensemble_predict(model, hyperparams)"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary btn-lg w-100" onclick="analyzeCode()">
+                                        <i class="fas fa-search"></i> Analyze Patent Potential
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="bg-light p-3 rounded h-100">
+                                        <h5><i class="fas fa-lightbulb"></i> Tips for Better Analysis</h5>
+                                        <ul class="feature-list mt-3">
+                                            <li>Include innovative algorithms or unique approaches</li>
+                                            <li>Show how your solution differs from existing methods</li>
+                                            <li>Highlight technical advantages and improvements</li>
+                                            <li>Include comments explaining the innovation</li>
+                                            <li>Show complete functions or classes when possible</li>
+                                        </ul>
+                                        <div class="mt-4">
+                                            <h6>Example Innovation Areas:</h6>
+                                            <span class="badge bg-info me-1 mb-1">Novel Algorithms</span>
+                                            <span class="badge bg-info me-1 mb-1">Unique Architecture</span>
+                                            <span class="badge bg-info me-1 mb-1">Optimization Techniques</span>
+                                            <span class="badge bg-info me-1 mb-1">Data Processing</span>
+                                            <span class="badge bg-info me-1 mb-1">AI/ML Innovations</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Analyzing your code for patent potential...</p>
+                    </div>
+                   
+                    <!-- Results Section -->
+                    <div id="analysisResults" class="mt-4" style="display: none;">
+                        <!-- Results will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patent Guide Section -->
+    <section id="patent" class="patent-section py-5 bg-dark text-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4">Patent Readiness Guide</h2>
+                <p class="lead">Steps to protect your innovative code</p>
+            </div>
+           
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="patent-step">
+                        <div class="step-number">1</div>
+                        <h4>Code Analysis</h4>
+                        <p>Use our AI analyzer to identify patent-worthy elements in your code</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="patent-step">
+                        <div class="step-number">2</div>
+                        <h4>Documentation</h4>
+                        <p>Create comprehensive documentation of your innovation</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="patent-step">
+                        <div class="step-number">3</div>
+                        <h4>Prior Art Search</h4>
+                        <p>Research existing patents to ensure novelty</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="patent-step">
+                        <div class="step-number">4</div>
+                        <h4>Patent Filing</h4>
+                        <p>Work with patent attorneys to file your application</p>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="bg-primary p-4 rounded text-center">
+                        <h3>Ready to Protect Your Innovation?</h3>
+                        <p class="mb-3">Start with our free code analysis to see if your code has patent potential</p>
+                        <button class="btn btn-light btn-lg" onclick="scrollToAnalyzer()">
+                            <i class="fas fa-play"></i> Analyze Your Code Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-robot"></i> CodeSight AI</h5>
+                    <p>Advanced code analysis for innovative developers</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2024 CodeSight AI. All rights reserved.</p>
+                    <div class="mt-2">
+                        <a href="#" class="text-white me-3"><i class="fab fa-github"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // CodeSight AI - Main JavaScript
+        function scrollToAnalyzer() {
+            document.getElementById('analyzer').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        function analyzeCode() {
+            const codeInput = document.getElementById('codeInput');
+            const languageSelect = document.getElementById('languageSelect');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultsDiv = document.getElementById('analysisResults');
+           
+            if (!codeInput.value.trim()) {
+                alert('Please enter some code to analyze');
+                return;
+            }
+           
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            resultsDiv.style.display = 'none';
+           
+            // Simulate AI analysis (in real implementation, this would call a backend API)
+            setTimeout(() => {
+                const analysis = performAnalysis(codeInput.value, languageSelect.value);
+                displayResults(analysis);
+                loadingSpinner.style.display = 'none';
+                resultsDiv.style.display = 'block';
+            }, 2500);
+        }
+
+        function performAnalysis(code, language) {
+            // Analyze code characteristics
+            const lines = code.split('\n').length;
+            const complexity = calculateComplexity(code);
+            const innovationScore = calculateInnovationScore(code, language);
+            const patentPotential = innovationScore > 70 ? 'High' : innovationScore > 40 ? 'Medium' : 'Low';
+           
+            // Detect potential innovative patterns
+            const patterns = detectInnovativePatterns(code, language);
+           
+            return {
+                innovationScore: innovationScore,
+                patentPotential: patentPotential,
+                complexity: complexity,
+                linesOfCode: lines,
+                language: language,
+                patterns: patterns,
+                recommendations: generateRecommendations(innovationScore, patterns),
+                strengths: identifyStrengths(code),
+                improvements: identifyImprovements(code, innovationScore)
+            };
+        }
+
+        function calculateComplexity(code) {
+            // Simple complexity calculation based on code structure
+            let complexity = 0;
+            complexity += (code.match(/if\s*\(/g) || []).length * 2;
+            complexity += (code.match(/for\s*\(/g) || []).length * 3;
+            complexity += (code.match(/while\s*\(/g) || []).length * 3;
+            complexity += (code.match(/function|def|class/g) || []).length * 5;
+           
+            return Math.min(complexity, 100);
+        }
+
+        function calculateInnovationScore(code, language) {
+            // Score based on various innovation indicators
+            let score = 50; // Base score
+           
+            // Bonus for algorithm complexity
+            if (code.includes('algorithm') || code.includes('optimization')) score += 10;
+           
+            // Bonus for AI/ML related code
+            if (code.includes('neural') || code.includes('machine learning') ||
+                code.includes('ai') || code.includes('ml')) score += 15;
+               
+            // Bonus for unique patterns
+            if (code.includes('patent') || code.includes('innovative') || code.includes('novel')) score += 5;
+           
+            // Bonus for technical sophistication
+            const sophisticatedTerms = ['blockchain', 'quantum', 'distributed', 'parallel', 'real-time'];
+            sophisticatedTerms.forEach(term => {
+                if (code.toLowerCase().includes(term)) score += 8;
+            });
+           
+            return Math.min(score, 95); // Cap at 95 to leave room for real innovation
+        }
+
+        function detectInnovativePatterns(code, language) {
+            const patterns = [];
+           
+            if (code.includes('async') || code.includes('await') || code.includes('Promise')) {
+                patterns.push('Advanced asynchronous programming');
+            }
+           
+            if (code.includes('class') && code.includes('extends') || code.includes('implements')) {
+                patterns.push('Sophisticated OOP architecture');
+            }
+           
+            if (code.includes('map') || code.includes('filter') || code.includes('reduce')) {
+                patterns.push('Functional programming patterns');
+            }
+           
+            if (code.includes('cache') || code.includes('optimize') || code.includes('performance')) {
+                patterns.push('Performance optimization techniques');
+            }
+           
+            if (code.includes('security') || code.includes('encrypt') || code.includes('auth')) {
+                patterns.push('Security-focused implementation');
+            }
+           
+            return patterns.length > 0 ? patterns : ['Standard implementation patterns detected'];
+        }
+
+        function generateRecommendations(score, patterns) {
+            const recommendations = [];
+           
+            if (score > 70) {
+                recommendations.push('Your code shows high patent potential');
+                recommendations.push('Consider documenting the novel algorithms');
+                recommendations.push('Research prior art in related domains');
+            } else if (score > 40) {
+                recommendations.push('Good foundation with moderate patent potential');
+                recommendations.push('Focus on unique aspects of your implementation');
+                recommendations.push('Consider enhancing the innovative elements');
+            } else {
+                recommendations.push('Focus on developing more unique aspects');
+                recommendations.push('Research existing solutions in your domain');
+                recommendations.push('Consider novel approaches to problem-solving');
+            }
+           
+            if (patterns.includes('Standard implementation patterns detected')) {
+                recommendations.push('Explore more innovative architectural patterns');
+            }
+           
+            return recommendations;
+        }
+
+        function identifyStrengths(code) {
+            const strengths = [];
+           
+            if (code.length > 200) strengths.push('Comprehensive implementation');
+            if (code.includes('function') || code.includes('def') || code.includes('class')) {
+                strengths.push('Well-structured code organization');
+            }
+            if (code.includes('comment') || code.includes('#')) strengths.push('Good documentation practices');
+           
+            return strengths.length > 0 ? strengths : ['Solid coding foundation'];
+        }
+
+        function identifyImprovements(code, score) {
+            const improvements = [];
+           
+            if (score < 60) improvements.push('Increase algorithmic complexity');
+            if (!code.includes('import') && !code.includes('require')) {
+                improvements.push('Consider leveraging external libraries for advanced functionality');
+            }
+            if (code.split('\n').length < 20) improvements.push('Expand implementation scope');
+           
+            return improvements.length > 0 ? improvements : ['Continue developing unique features'];
+        }
+
+        function displayResults(analysis) {
+            const resultsDiv = document.getElementById('analysisResults');
+           
+            const patentBadgeClass = analysis.patentPotential === 'High' ? 'bg-success' :
+                                   analysis.patentPotential === 'Medium' ? 'bg-warning' : 'bg-secondary';
+           
+            resultsDiv.innerHTML = `
+                <div class="result-card">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0"><i class="fas fa-chart-bar"></i> Analysis Results</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <div class="innovation-score">${analysis.innovationScore}/100</div>
+                                    <div class="mb-3">Innovation Score</div>
+                                    <span class="badge ${patentBadgeClass} patent-badge">
+                                        ${analysis.patentPotential} Patent Potential
+                                    </span>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Language:</strong> ${analysis.language}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Lines of Code:</strong> ${analysis.linesOfCode}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Complexity:</strong> ${analysis.complexity}/100
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Analysis:</strong> AI-Powered
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-star"></i> Detected Strengths</h5>
+                                    <ul class="feature-list">
+                                        ${analysis.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-tools"></i> Suggested Improvements</h5>
+                                    <ul class="feature-list">
+                                        ${analysis.improvements.map(improvement => `<li>${improvement}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                           
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5><i class="fas fa-lightbulb"></i> Innovative Patterns Detected</h5>
+                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                        ${analysis.patterns.map(pattern =>
+                                            `<span class="badge bg-info">${pattern}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5><i class="fas fa-clipboard-list"></i> Recommendations</h5>
+                                    <div class="alert alert-info">
+                                        ${analysis.recommendations.map(rec =>
+                                            `<p class="mb-1"><i class="fas fa-check-circle"></i> ${rec}</p>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-primary me-2" onclick="analyzeCode()">
+                                    <i class="fas fa-redo"></i> Analyze Again
+                                </button>
+                                <button class="btn btn-primary" onclick="scrollToPatent()">
+                                    <i class="fas fa-file-alt"></i> Patent Guide
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function scrollToPatent() {
+            document.getElementById('patent').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Initialize with sample code
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add sample code for demonstration
+            const sampleCode = `def adaptive_ml_pipeline(data, context):
+    # Self-optimizing machine learning algorithm
+    # Patent-worthy innovation: Real-time hyperparameter optimization
+   
+    # Analyze data characteristics
+    data_profile = analyze_data_structure(data)
+   
+    # Auto-select best model architecture
+    model = auto_select_model(data_profile)
+   
+    # Real-time optimization based on context
+    hyperparams = real_time_optimization(context, data_profile)
+   
+    # Ensemble prediction for accuracy
+    return ensemble_predict(model, hyperparams, data)
+
+def real_time_optimization(context, data_profile):
+    # Novel optimization algorithm
+    # Combines Bayesian optimization with reinforcement learning
+    optimization_strategy = select_optimization_strategy(context)
+    return optimize_hyperparameters(optimization_strategy, data_profile)`;
+           
+            document.getElementById('codeInput').value = sampleCode;
+        });
+    </script>
+</body>
+</html>
